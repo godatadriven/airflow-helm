@@ -1,0 +1,64 @@
+imageCredentials:
+  registry: azureregistry.azurecr.io
+  username: azureregistry
+  password:
+
+airflow:
+  image:
+    repository: azureregistry.azurecr.io/airflow
+    tag: 1.10.3
+    pullPolicy: Always
+    pullSecret: acr-auth
+
+  executor: Kubernetes
+  service:
+    type: ClusterIP
+  fernetKey:
+  sqlalchemy_connection:
+
+  config:
+    AIRFLOW__CORE__EXECUTOR: KubernetesExecutor
+
+    AIRFLOW_HOME: /usr/local/airflow
+    AIRFLOW__KUBERNETES__WORKER_CONTAINER_REPOSITORY: azureregistry.azurecr.io/airflow
+    AIRFLOW__KUBERNETES__WORKER_CONTAINER_TAG: 1.10.2
+    AIRFLOW__KUBERNETES__WORKER_CONTAINER_IMAGE_PULL_POLICY: IfNotPresent
+    AIRFLOW__KUBERNETES__IMAGE_PULL_SECRETS: acr-auth
+
+    AIRFLOW__KUBERNETES__WORKER_SERVICE_ACCOUNT_NAME: airflow
+    AIRFLOW__KUBERNETES__NAMESPACE: airflow
+
+    AIRFLOW__KUBERNETES__DAGS_VOLUME_CLAIM: airflow-dags
+    AIRFLOW__KUBERNETES__LOGS_VOLUME_CLAIM: airflow-logs
+
+    AIRFLOW__KUBERNETES__AIRFLOW_CONFIGMAP: airflow-workers-env
+
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN:
+    AIRFLOW__CORE__LOAD_EXAMPLES: False
+
+persistence:
+  fileStore:
+    storageAccountName: azurestorageaccount
+    storageAccountKey:
+
+  logs:
+    secretName: azure-file-airflow-logs
+    shareName: airflow-logs
+
+  dags:
+    secretName: azure-file-airflow-dags
+    shareName: airflow-dags
+
+  temp:
+    secretName: azure-file-airflow-temp
+    shareName: airflow-temp
+
+logs:
+  path: /usr/local/airflow/logs
+
+dags:
+  path: /usr/local/airflow/dags
+  doNotPickle: false
+
+workers:
+  enabled: false

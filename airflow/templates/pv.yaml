@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.persistence.logs.shareName }}
+  labels:
+    app: {{ template "airflow.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteMany
+  azureFile:
+    secretName: {{ .Values.persistence.logs.secretName }}
+    shareName: {{ .Values.persistence.logs.shareName }}
+    readOnly: false
+  mountOptions:
+    - dir_mode=0755
+    - file_mode=0755
+    - uid=1000
+    - gid=1000
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.persistence.dags.shareName }}
+  labels:
+    app: {{ template "airflow.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  azureFile:
+    secretName: {{ .Values.persistence.dags.secretName }}
+    shareName: {{ .Values.persistence.dags.shareName }}
+    readOnly: false
+  mountOptions:
+    - dir_mode=0755
+    - file_mode=0755
+    - uid=1000
+    - gid=1000

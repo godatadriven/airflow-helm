@@ -60,5 +60,8 @@ dags:
   path: /usr/local/airflow/dags
   doNotPickle: false
 
+temp:
+  path: /usr/local/airflow/temp
+
 workers:
   enabled: false
